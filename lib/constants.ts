@@ -5,7 +5,7 @@ export const AUTH_TOKEN_KEY =
   process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "its_deligh_token";
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1";
 
 export const ROUTES = {
   login: "/login",
