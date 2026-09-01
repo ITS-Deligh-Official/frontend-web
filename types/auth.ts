@@ -84,6 +84,10 @@ export interface BackendLoginData {
  *     ...
  *   }
  * }
+ *
+ * Note:
+ * services/api.ts unwraps the outer
+ * response and returns only "data".
  */
 export interface BackendLoginResponse {
   success: boolean;
