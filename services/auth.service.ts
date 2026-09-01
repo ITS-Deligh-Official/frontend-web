@@ -8,7 +8,7 @@ import type {
   ForgotPasswordPayload,
   ResetPasswordPayload,
   AuthResponse,
-  BackendLoginResponse,
+  BackendLoginData,
   SystemRole,
 } from "@/types/auth";
 
@@ -100,10 +100,10 @@ export const authService = {
      * }
      *
      * So this response is directly
-     * BackendLoginResponse.
+     * BackendLoginData.
      */
     const data =
-      await post<BackendLoginResponse>(
+      await post<BackendLoginData>(
         API_ENDPOINTS.login,
         {
           email: payload.email,
@@ -139,11 +139,18 @@ export const authService = {
         email:
           data.email,
 
+        /**
+         * Primary role used for
+         * routing and dashboard selection.
+         */
         role:
           getPrimaryRole(
             roles
           ),
 
+        /**
+         * Complete normalized role list.
+         */
         roles,
 
         /**
