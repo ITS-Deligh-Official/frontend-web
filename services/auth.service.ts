@@ -15,14 +15,23 @@ import type {
 /**
  * Converts backend roles into frontend-friendly role values.
  *
- * Backend:
+ * Backend examples:
  * SUPER_ADMIN
+ * ADMIN
+ * STUDENT
  *
- * Frontend:
+ * Frontend examples:
  * super_admin
+ * admin
+ * student
  */
-function normalizeRole(role: string): SystemRole {
-  const normalized = role.trim().toLowerCase();
+function normalizeRole(
+  role: string
+): SystemRole {
+  const normalized =
+    role
+      .trim()
+      .toLowerCase();
 
   const validRoles: SystemRole[] = [
     "super_admin",
@@ -34,7 +43,11 @@ function normalizeRole(role: string): SystemRole {
     "user",
   ];
 
-  if (validRoles.includes(normalized as SystemRole)) {
+  if (
+    validRoles.includes(
+      normalized as SystemRole
+    )
+  ) {
     return normalized as SystemRole;
   }
 
@@ -45,63 +58,74 @@ function normalizeRole(role: string): SystemRole {
  * Determines the user's primary role.
  *
  * Priority:
- * 1. SUPER_ADMIN
- * 2. ADMIN
- * 3. Other role
- * 4. USER
+ * 1. super_admin
+ * 2. admin
+ * 3. first assigned role
+ * 4. user
  */
-function getPrimaryRole(roles: string[]): SystemRole {
-  const normalizedRoles = roles.map(normalizeRole);
-
-  if (normalizedRoles.includes("super_admin")) {
+function getPrimaryRole(
+  roles: SystemRole[]
+): SystemRole {
+  if (
+    roles.includes("super_admin")
+  ) {
     return "super_admin";
   }
 
-  if (normalizedRoles.includes("admin")) {
+  if (
+    roles.includes("admin")
+  ) {
     return "admin";
   }
 
-  return normalizedRoles[0] || "user";
+  return roles[0] || "user";
 }
 
 export const authService = {
+
+  /**
+   * Login user.
+   */
   login: async (
     payload: LoginPayload
   ): Promise<AuthResponse> => {
-    const response = await post<BackendLoginResponse>(
-      API_ENDPOINTS.login,
-      {
-        email: payload.email,
-        password: payload.password,
-      }
-    );
 
     /**
-     * Backend response structure:
+     * services/api.ts already unwraps:
      *
      * {
-     *   success: true,
-     *   message: "Login successful",
-     *   data: {
-     *     accessToken,
-     *     userId,
-     *     fullName,
-     *     email,
-     *     roles
-     *   }
+     *   success,
+     *   message,
+     *   data
      * }
+     *
+     * So this response is directly
+     * BackendLoginResponse.
      */
-    if (!response.success || !response.data) {
+    const data =
+      await post<BackendLoginResponse>(
+        API_ENDPOINTS.login,
+        {
+          email: payload.email,
+          password: payload.password,
+        }
+      );
+
+    if (
+      !data ||
+      !data.accessToken
+    ) {
       throw new Error(
-        response.message || "Login failed"
+        "Login failed. Access token was not received."
       );
     }
 
-    const data = response.data;
-
-    const roles = Array.isArray(data.roles)
-      ? data.roles.map(normalizeRole)
-      : [];
+    const roles =
+      Array.isArray(data.roles)
+        ? data.roles.map(
+            normalizeRole
+          )
+        : [];
 
     return {
       token: data.accessToken,
@@ -109,24 +133,22 @@ export const authService = {
       user: {
         id: data.userId,
 
-        fullName: data.fullName,
+        fullName:
+          data.fullName,
 
-        email: data.email,
+        email:
+          data.email,
 
-        /**
-         * Primary role used for
-         * routing and dashboard selection.
-         */
-        role: getPrimaryRole(data.roles || []),
+        role:
+          getPrimaryRole(
+            roles
+          ),
 
-        /**
-         * Complete normalized role list.
-         */
         roles,
 
         /**
-         * Backend does not currently
-         * return email verification status.
+         * Backend currently does not
+         * return verification status.
          */
         emailVerified: true,
       },
@@ -144,7 +166,9 @@ export const authService = {
   forgotPassword: (
     payload: ForgotPasswordPayload
   ) =>
-    post<{ message: string }>(
+    post<{
+      message: string;
+    }>(
       API_ENDPOINTS.forgotPassword,
       payload
     ),
@@ -152,7 +176,9 @@ export const authService = {
   resetPassword: (
     payload: ResetPasswordPayload
   ) =>
-    post<{ message: string }>(
+    post<{
+      message: string;
+    }>(
       API_ENDPOINTS.resetPassword,
       payload
     ),
@@ -160,7 +186,9 @@ export const authService = {
   verifyEmail: (
     token: string
   ) =>
-    post<{ message: string }>(
+    post<{
+      message: string;
+    }>(
       API_ENDPOINTS.verifyEmail,
       { token }
     ),
@@ -168,16 +196,22 @@ export const authService = {
   resendVerification: (
     email: string
   ) =>
-    post<{ message: string }>(
+    post<{
+      message: string;
+    }>(
       API_ENDPOINTS.resendVerification,
       { email }
     ),
 
   completeProfile: (
-    payload: Record<string, unknown>
+    payload: Record<
+      string,
+      unknown
+    >
   ) =>
     post<AuthResponse["user"]>(
       API_ENDPOINTS.completeProfile,
       payload
     ),
+
 };
