@@ -1,4 +1,27 @@
-export type Role = "student" | "trainer" | "recruiter" | "institution";
+export type Role =
+  | "super_admin"
+  | "admin"
+  | "student"
+  | "trainer"
+  | "recruiter"
+  | "institution"
+  | "user";
+
+/**
+ * System roles can expand in the future without breaking
+ * backend role normalization.
+ */
+export type SystemRole = Role;
+
+/**
+ * Only these roles can be selected during public signup.
+ * Admin roles must never be publicly selectable.
+ */
+export type SignupRole =
+  | "student"
+  | "trainer"
+  | "recruiter"
+  | "institution";
 
 export interface LoginPayload {
   email: string;
@@ -11,7 +34,7 @@ export interface SignupPayload {
   email: string;
   mobile: string;
   password: string;
-  role: Role;
+  role: SignupRole;
 }
 
 export interface ForgotPasswordPayload {
@@ -23,14 +46,54 @@ export interface ResetPasswordPayload {
   password: string;
 }
 
+/**
+ * Raw response returned by Spring Boot login API.
+ *
+ * Backend response:
+ * {
+ *   accessToken,
+ *   tokenType,
+ *   userId,
+ *   fullName,
+ *   email,
+ *   roles
+ * }
+ */
+export interface BackendLoginResponse {
+  accessToken: string;
+  tokenType: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  roles: string[];
+}
+
+/**
+ * Frontend authenticated user.
+ */
+export interface AuthUser {
+  id: string;
+  fullName: string;
+  email: string;
+
+  /**
+   * Primary role used for routing.
+   */
+  role: SystemRole;
+
+  /**
+   * All roles assigned to the user.
+   */
+  roles?: SystemRole[];
+
+  emailVerified: boolean;
+}
+
+/**
+ * Normalized frontend authentication response.
+ */
 export interface AuthResponse {
   token: string;
   refreshToken?: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-    role: Role;
-    emailVerified: boolean;
-  };
+  user: AuthUser;
 }

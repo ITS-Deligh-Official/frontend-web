@@ -1,34 +1,87 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+
 import { toast } from "sonner";
+
 import { authService } from "@/services/auth.service";
+
+import {
+  getRoleHome,
+} from "@/lib/constants";
+
 import { useAuthStore } from "@/store/authStore";
-import { ROLE_HOME } from "@/lib/constants";
-import type { LoginPayload } from "@/types/auth";
+
+import type {
+  LoginPayload,
+} from "@/types/auth";
 
 export function useLogin() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const setSession = useAuthStore((s) => s.setSession);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function login(payload: LoginPayload) {
+  const router = useRouter();
+
+  const searchParams =
+    useSearchParams();
+
+  const setSession =
+    useAuthStore(
+      (state) => state.setSession
+    );
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
+  async function login(
+    payload: LoginPayload
+  ) {
+
     setIsSubmitting(true);
+
     try {
-      const session = await authService.login(payload);
+
+      const session =
+        await authService.login(payload);
+
       setSession(session);
-      toast.success("Welcome back!");
-      const redirect = searchParams.get("redirect") || ROLE_HOME[session.user.role];
-      router.push(redirect);
+
+      toast.success(
+        "Welcome back!"
+      );
+
+      const redirect =
+        searchParams.get("redirect");
+
+      const roleHome =
+        getRoleHome(
+          session.user.role
+        );
+
+      router.push(
+        redirect || roleHome
+      );
+
     } catch (error) {
-      toast.error("We couldn't log you in. Check your email and password and try again.");
+
+      toast.error(
+        "We couldn't log you in. Check your email and password and try again."
+      );
+
       throw error;
+
     } finally {
+
       setIsSubmitting(false);
+
     }
   }
 
-  return { login, isSubmitting };
+  return {
+    login,
+    isSubmitting,
+  };
 }
