@@ -1,24 +1,62 @@
 "use client";
 
-import { AUTH_TOKEN_KEY } from "./constants";
+import {
+  AUTH_TOKEN_KEY,
+} from "./constants";
 
-/**
- * Thin wrapper around token storage. Uses both localStorage (for client
- * reads) and a cookie (so middleware.ts can check auth on the server/edge).
- */
 export function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(AUTH_TOKEN_KEY);
+
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return null;
+  }
+
+  return window
+    .localStorage
+    .getItem(
+      AUTH_TOKEN_KEY
+    );
 }
 
-export function setToken(token: string) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(AUTH_TOKEN_KEY, token);
-  document.cookie = `${AUTH_TOKEN_KEY}=${token}; path=/; max-age=${60 * 60 * 24 * 7}`;
+export function setToken(
+  token: string
+) {
+
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return;
+  }
+
+  window
+    .localStorage
+    .setItem(
+      AUTH_TOKEN_KEY,
+      token
+    );
+
+  document.cookie =
+    `${AUTH_TOKEN_KEY}=${token}; path=/; max-age=${60 * 60 * 24 * 7}`;
 }
 
 export function clearToken() {
-  if (typeof window === "undefined") return;
-  window.localStorage.removeItem(AUTH_TOKEN_KEY);
-  document.cookie = `${AUTH_TOKEN_KEY}=; path=/; max-age=0`;
+
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return;
+  }
+
+  window
+    .localStorage
+    .removeItem(
+      AUTH_TOKEN_KEY
+    );
+
+  document.cookie =
+    `${AUTH_TOKEN_KEY}=; path=/; max-age=0`;
 }

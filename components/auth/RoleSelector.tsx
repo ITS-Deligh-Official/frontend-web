@@ -1,5 +1,5 @@
 import { ROLES } from "@/data/roles";
-import type { Role } from "@/types/auth";
+import type { SignupRole } from "@/types/auth";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { cn } from "@/lib/utils";
 
@@ -8,21 +8,26 @@ export default function RoleSelector({
   onChange,
   error,
 }: {
-  value: Role | null;
-  onChange: (role: Role) => void;
+  value: SignupRole | null;
+  onChange: (role: SignupRole) => void;
   error?: string;
 }) {
   return (
     <div>
-      <p className="mb-2 text-sm font-medium text-grey-70">Select Your Role</p>
+      <p className="mb-2 text-sm font-medium text-grey-70">
+        Select Your Role
+      </p>
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {ROLES.map(({ id, label, icon: Icon }) => {
-          const selected = value === id;
+          const role = id as SignupRole;
+          const selected = value === role;
+
           return (
             <button
               key={id}
               type="button"
-              onClick={() => onChange(id)}
+              onClick={() => onChange(role)}
               aria-pressed={selected}
               className={cn(
                 "flex flex-col items-center gap-2 rounded-xl border p-3 text-xs font-medium transition-colors",
@@ -37,6 +42,7 @@ export default function RoleSelector({
           );
         })}
       </div>
+
       <ErrorMessage message={error} />
     </div>
   );

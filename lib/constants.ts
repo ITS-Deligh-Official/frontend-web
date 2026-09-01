@@ -22,12 +22,37 @@ export const ROUTES = {
  * pages are completely different. Use this after login/signup to send the
  * user to the right place.
  */
-export const ROLE_HOME: Record<import("@/types/auth").Role, string> = {
+/**
+ * Default dashboard routes for known roles.
+ *
+ * Future roles can be added here without changing
+ * the authentication architecture.
+ */
+export const ROLE_HOME: Record<string, string> = {
+  super_admin: "/",
+  admin: "/",
+
   student: "/student",
   trainer: "/trainer",
   institution: "/institution",
   recruiter: "/recruiter",
 };
+
+/**
+ * Returns the correct home page for a role.
+ *
+ * Unknown roles safely fall back to "/".
+ */
+export function getRoleHome(
+  role?: string
+): string {
+
+  if (!role) {
+    return "/";
+  }
+
+  return ROLE_HOME[role.toLowerCase()] || "/";
+}
 
 export const API_ENDPOINTS = {
   login: "/auth/login",
