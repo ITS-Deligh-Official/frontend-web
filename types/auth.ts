@@ -8,14 +8,16 @@ export type Role =
   | "user";
 
 /**
- * System roles can expand in the future without breaking
- * backend role normalization.
+ * System roles.
+ *
+ * New roles can be added here in the future.
  */
 export type SystemRole = Role;
 
 /**
  * Only these roles can be selected during public signup.
- * Admin roles must never be publicly selectable.
+ *
+ * Admin and Super Admin must never be publicly selectable.
  */
 export type SignupRole =
   | "student"
@@ -47,25 +49,46 @@ export interface ResetPasswordPayload {
 }
 
 /**
- * Raw response returned by Spring Boot login API.
+ * Actual login data returned inside
+ * the backend response "data" property.
  *
- * Backend response:
+ * Backend example:
+ *
  * {
- *   accessToken,
- *   tokenType,
- *   userId,
- *   fullName,
- *   email,
- *   roles
+ *   "accessToken": "...",
+ *   "tokenType": "Bearer",
+ *   "userId": "...",
+ *   "fullName": "...",
+ *   "email": "...",
+ *   "roles": ["SUPER_ADMIN"]
  * }
  */
-export interface BackendLoginResponse {
+export interface BackendLoginData {
   accessToken: string;
-  tokenType: string;
+  tokenType?: string;
   userId: string;
   fullName: string;
   email: string;
   roles: string[];
+}
+
+/**
+ * Actual Spring Boot API response.
+ *
+ * Backend example:
+ *
+ * {
+ *   "success": true,
+ *   "message": "Login successful",
+ *   "data": {
+ *     ...
+ *   }
+ * }
+ */
+export interface BackendLoginResponse {
+  success: boolean;
+  message: string;
+  data: BackendLoginData | null;
 }
 
 /**
@@ -77,14 +100,16 @@ export interface AuthUser {
   email: string;
 
   /**
-   * Primary role used for routing.
+   * Primary role used for
+   * routing and dashboard selection.
    */
   role: SystemRole;
 
   /**
-   * All roles assigned to the user.
+   * All normalized roles assigned
+   * to this user.
    */
-  roles?: SystemRole[];
+  roles: SystemRole[];
 
   emailVerified: boolean;
 }

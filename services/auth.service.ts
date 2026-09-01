@@ -1,4 +1,5 @@
 import { post } from "./api";
+
 import { API_ENDPOINTS } from "@/lib/constants";
 
 import type {
@@ -14,9 +15,11 @@ import type {
 /**
  * Converts backend roles into frontend-friendly role values.
  *
- * IMPORTANT:
- * Unknown roles are preserved automatically so that future
- * backend roles do not break the login system.
+ * Backend:
+ * SUPER_ADMIN
+ *
+ * Frontend:
+ * super_admin
  */
 function normalizeRole(role: string): SystemRole {
   const normalized = role.trim().toLowerCase();
@@ -42,9 +45,10 @@ function normalizeRole(role: string): SystemRole {
  * Determines the user's primary role.
  *
  * Priority:
- * SUPER_ADMIN
- * ADMIN
- * Other roles
+ * 1. SUPER_ADMIN
+ * 2. ADMIN
+ * 3. Other role
+ * 4. USER
  */
 function getPrimaryRole(roles: string[]): SystemRole {
   const normalizedRoles = roles.map(normalizeRole);
@@ -64,7 +68,6 @@ export const authService = {
   login: async (
     payload: LoginPayload
   ): Promise<AuthResponse> => {
-
     const response = await post<BackendLoginResponse>(
       API_ENDPOINTS.login,
       {
@@ -73,38 +76,66 @@ export const authService = {
       }
     );
 
-    const roles = Array.isArray(response.roles)
-      ? response.roles.map(normalizeRole)
+    /**
+     * Backend response structure:
+     *
+     * {
+     *   success: true,
+     *   message: "Login successful",
+     *   data: {
+     *     accessToken,
+     *     userId,
+     *     fullName,
+     *     email,
+     *     roles
+     *   }
+     * }
+     */
+    if (!response.success || !response.data) {
+      throw new Error(
+        response.message || "Login failed"
+      );
+    }
+
+    const data = response.data;
+
+    const roles = Array.isArray(data.roles)
+      ? data.roles.map(normalizeRole)
       : [];
 
     return {
-      token: response.accessToken,
+      token: data.accessToken,
 
       user: {
-        id: response.userId,
-        fullName: response.fullName,
-        email: response.email,
+        id: data.userId,
+
+        fullName: data.fullName,
+
+        email: data.email,
 
         /**
-         * Primary role for routing.
+         * Primary role used for
+         * routing and dashboard selection.
          */
-        role: getPrimaryRole(response.roles || []),
+        role: getPrimaryRole(data.roles || []),
 
         /**
-         * Complete role list.
+         * Complete normalized role list.
          */
         roles,
 
         /**
-         * Backend currently doesn't return email verification status.
-         * Keep this true temporarily until backend adds the field.
+         * Backend does not currently
+         * return email verification status.
          */
         emailVerified: true,
       },
     };
   },
 
-  signup: (payload: SignupPayload) =>
+  signup: (
+    payload: SignupPayload
+  ) =>
     post<AuthResponse>(
       API_ENDPOINTS.signup,
       payload
@@ -126,13 +157,17 @@ export const authService = {
       payload
     ),
 
-  verifyEmail: (token: string) =>
+  verifyEmail: (
+    token: string
+  ) =>
     post<{ message: string }>(
       API_ENDPOINTS.verifyEmail,
       { token }
     ),
 
-  resendVerification: (email: string) =>
+  resendVerification: (
+    email: string
+  ) =>
     post<{ message: string }>(
       API_ENDPOINTS.resendVerification,
       { email }
