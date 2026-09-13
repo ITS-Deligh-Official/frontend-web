@@ -6,7 +6,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { KeyRound } from "lucide-react";
-import { resetPasswordSchema, type ResetPasswordSchema } from "@/schemas/resetPasswordSchema";
+import {
+  resetPasswordSchema,
+  type ResetPasswordSchema,
+} from "@/schemas/resetPasswordSchema";
 import { authService } from "@/services/auth.service";
 import { ROUTES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
@@ -42,7 +45,9 @@ export default function ResetPasswordForm() {
       toast.success("Password updated. Please log in.");
       router.push(ROUTES.login);
     } catch {
-      setSubmitError("This reset link is invalid or has expired. Please request a new one.");
+      setSubmitError(
+        "This reset link is invalid or has expired. Please request a new one.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -50,9 +55,16 @@ export default function ResetPasswordForm() {
 
   return (
     <>
-      <AuthHeader title="Reset Password" subtitle="Choose a new password for your account." />
+      <AuthHeader
+        title="Reset Password"
+        subtitle="Choose a new password for your account."
+      />
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8 space-y-5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className="mt-8 space-y-5"
+      >
         <PasswordInput
           id="password"
           label="New Password"
@@ -69,7 +81,9 @@ export default function ResetPasswordForm() {
         />
 
         <div>
-          <p className="mb-2 text-xs font-medium text-grey-50">Password must contain:</p>
+          <p className="mb-2 text-xs font-medium text-grey-50">
+            Password must contain:
+          </p>
           <PasswordStrength password={password} />
         </div>
 
