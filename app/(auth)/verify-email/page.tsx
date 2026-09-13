@@ -30,7 +30,9 @@ function ResendButton({ email }: { email: string | null }) {
 
   async function handleResend() {
     if (!email) {
-      toast.error("We don't have your email on this screen — please sign up again.");
+      toast.error(
+        "We don't have your email on this screen — please sign up again.",
+      );
       return;
     }
     setSending(true);
@@ -45,7 +47,12 @@ function ResendButton({ email }: { email: string | null }) {
   }
 
   return (
-    <Button type="button" variant="outline" onClick={handleResend} disabled={sending}>
+    <Button
+      type="button"
+      variant="outline"
+      onClick={handleResend}
+      disabled={sending}
+    >
       {sending ? "Sending…" : "Resend Verification Email"}
     </Button>
   );
@@ -70,13 +77,17 @@ function VerifyEmailContent() {
       <>
         <AuthHeader
           title="Verify Your Email"
-          subtitle={email ? `We've sent a verification link to ${email}.` : "We've sent a verification link to your email address."}
+          subtitle={
+            email
+              ? `We've sent a verification link to ${email}.`
+              : "We've sent a verification link to your email address."
+          }
         />
         <div className="mt-8 flex flex-col items-center gap-4 rounded-lg bg-secondary-10 p-6 text-center">
           <MailCheck className="h-8 w-8 text-secondary" />
           <p className="text-sm text-grey-60">
-            Click the link in that email to activate your account. Didn&apos;t get it? Check
-            your spam folder or request a new one below.
+            Click the link in that email to activate your account. Didn&apos;t
+            get it? Check your spam folder or request a new one below.
           </p>
           <ResendButton email={email} />
         </div>
@@ -108,7 +119,9 @@ function VerifyEmailContent() {
   return (
     <div className="flex flex-col items-center gap-3 py-10 text-center">
       <MailCheck className="h-8 w-8 text-success" />
-      <p className="text-sm font-medium text-primary">Your email is verified!</p>
+      <p className="text-sm font-medium text-primary">
+        Your email is verified!
+      </p>
       <Button asChild className="mt-2 w-full">
         <Link href="/complete-profile">Continue</Link>
       </Button>

@@ -10,7 +10,11 @@ function getVariant(pathname: string): SidebarVariant {
   return "generic";
 }
 
-export default function AuthGroupLayout({ children }: { children: React.ReactNode }) {
+export default function AuthGroupLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   return <AuthLayout variant={getVariant(pathname)}>{children}</AuthLayout>;
 }

@@ -9,6 +9,6 @@ export function usePasswordStrength(password: string) {
       checks: getPasswordChecks(password),
       score: passwordStrengthScore(password),
     }),
-    [password]
+    [password],
   );
 }

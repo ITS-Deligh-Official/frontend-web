@@ -9,7 +9,10 @@ export default function RememberMe({
 }) {
   return (
     <label className="flex items-center gap-2 text-sm text-grey-60">
-      <Checkbox checked={checked} onCheckedChange={(v) => onCheckedChange(v === true)} />
+      <Checkbox
+        checked={checked}
+        onCheckedChange={(v) => onCheckedChange(v === true)}
+      />
       Remember Me
     </label>
   );
