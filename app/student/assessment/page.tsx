@@ -7,7 +7,9 @@ export default async function StudentAssessmentPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-primary">Assessment</h1>
+      <h1 className="font-display text-2xl font-bold text-primary">
+        Assessment
+      </h1>
       <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
         <AssessmentList assessments={assessments} />
         <UploadWorkPanel assessmentId={assessments[0]?.id ?? ""} />

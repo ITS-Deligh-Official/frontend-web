@@ -10,8 +10,9 @@ export default function InstitutionHomePage() {
         Institution workspace is on the way
       </h1>
       <p className="mt-2 max-w-md text-sm text-grey-60">
-        The Student dashboard is live first. The Institution workspace — batch and cohort oversight, enrollment, and placement reporting —
-        is next, built to the same brand system and reusing this same sidebar shell.
+        The Student dashboard is live first. The Institution workspace — batch
+        and cohort oversight, enrollment, and placement reporting — is next,
+        built to the same brand system and reusing this same sidebar shell.
       </p>
     </div>
   );

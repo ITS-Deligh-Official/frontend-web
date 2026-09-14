@@ -10,7 +10,9 @@ export default function AiChatButton() {
       size="lg"
       variant="outline"
       onClick={() =>
-        toast.info("AI Chat is coming soon — it'll connect to the assistant once the backend is live.")
+        toast.info(
+          "AI Chat is coming soon — it'll connect to the assistant once the backend is live.",
+        )
       }
     >
       <MessageCircleQuestion className="h-4 w-4" />
