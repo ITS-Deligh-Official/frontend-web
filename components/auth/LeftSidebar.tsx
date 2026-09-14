@@ -4,46 +4,41 @@ import LoginIllustration from "./LoginIllustration";
 
 export type SidebarVariant = "login" | "signup" | "generic";
 
-const COPY: Record<SidebarVariant, { heading: React.ReactNode; body: string }> =
-  {
-    login: {
-      heading: (
-        <>
-          Welcome back to
-          <br />
-          <span className="text-secondary-10">Deligh Campus</span>
-        </>
-      ),
-      body: "Pick up where you left off — courses, assessments, and your career progress are all in one place.",
-    },
-    signup: {
-      heading: (
-        <>
-          Built for <span className="text-secondary-10">Smarter</span>
-          <br />
-          Education
-        </>
-      ),
-      body: "Create your account and get a structured path from learning to a job-ready, verified profile.",
-    },
-    generic: {
-      heading: (
-        <>
-          Learning, assessment
-          <br />
-          and career growth —{" "}
-          <span className="text-secondary-10">together</span>
-        </>
-      ),
-      body: "Deligh Campus connects courses, skill assessments, and career readiness in one trusted platform.",
-    },
-  };
+const COPY: Record<SidebarVariant, { heading: React.ReactNode; body: string }> = {
+  login: {
+    heading: (
+      <>
+        Welcome back to
+        <br />
+        <span className="text-secondary-10">Deligh Campus</span>
+      </>
+    ),
+    body: "Pick up where you left off — courses, assessments, and your career progress are all in one place.",
+  },
+  signup: {
+    heading: (
+      <>
+        Built for <span className="text-secondary-10">Smarter</span>
+        <br />
+        Education
+      </>
+    ),
+    body: "Create your account and get a structured path from learning to a job-ready, verified profile.",
+  },
+  generic: {
+    heading: (
+      <>
+        Learning, assessment
+        <br />
+        and career growth —{" "}
+        <span className="text-secondary-10">together</span>
+      </>
+    ),
+    body: "Deligh Campus connects courses, skill assessments, and career readiness in one trusted platform.",
+  },
+};
 
-export default function LeftSidebar({
-  variant = "generic",
-}: {
-  variant?: SidebarVariant;
-}) {
+export default function LeftSidebar({ variant = "generic" }: { variant?: SidebarVariant }) {
   const copy = COPY[variant];
 
   return (
@@ -56,12 +51,8 @@ export default function LeftSidebar({
         <BrandLogo variant="full" theme="dark" size={38} href="/" />
 
         <div className="mt-10">
-          <h1 className="text-3xl font-bold leading-tight text-white">
-            {copy.heading}
-          </h1>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
-            {copy.body}
-          </p>
+          <h1 className="text-3xl font-bold leading-tight text-white">{copy.heading}</h1>
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">{copy.body}</p>
         </div>
 
         <FeatureTimeline />

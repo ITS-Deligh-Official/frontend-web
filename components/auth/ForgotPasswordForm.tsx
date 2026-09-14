@@ -4,10 +4,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Send, ArrowLeft } from "lucide-react";
-import {
-  forgotPasswordSchema,
-  type ForgotPasswordSchema,
-} from "@/schemas/forgotPasswordSchema";
+import { forgotPasswordSchema, type ForgotPasswordSchema } from "@/schemas/forgotPasswordSchema";
 import { useForgotPassword } from "@/hooks/useForgotPassword";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -44,11 +41,7 @@ export default function ForgotPasswordForm() {
           Check your inbox for a link to reset your password.
         </div>
       ) : (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-          className="mt-8 space-y-5"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8 space-y-5">
           <div>
             <Label htmlFor="email">Email Address</Label>
             <div className="relative">
@@ -74,10 +67,7 @@ export default function ForgotPasswordForm() {
       )}
 
       <AuthFooter>
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-1 font-medium text-secondary hover:underline"
-        >
+        <Link href="/login" className="inline-flex items-center gap-1 font-medium text-secondary hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Login
         </Link>

@@ -1,26 +1,26 @@
 import axios from "axios";
-import { API_BASE_URL } from "@/lib/constants";
-
-const timeout = Number(process.env.NEXT_PUBLIC_API_TIMEOUT_MS ?? "15000");
+import { API_BASE_URL } from "./constants";
+import { getToken, clearToken } from "./auth";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: Number.isFinite(timeout) ? timeout : 15000,
-  withCredentials: true,
-  headers: { "Content-Type": "application/json", Accept: "application/json" },
+  headers: { "Content-Type": "application/json" },
+});
+
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    if (error?.response?.status === 401 && typeof window !== "undefined") {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "same-origin",
-      }).catch(() => undefined);
-      if (!window.location.pathname.startsWith("/login"))
-        window.location.assign("/login?reason=session-expired");
+  (error) => {
+    if (error?.response?.status === 401) {
+      clearToken();
     }
     return Promise.reject(error);
-  },
+  }
 );

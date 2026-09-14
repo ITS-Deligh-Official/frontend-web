@@ -4,10 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, LogIn } from "lucide-react";
+import {
+  Mail,
+  LogIn,
+} from "lucide-react";
 import { toast } from "sonner";
 
-import { loginSchema, type LoginSchema } from "@/schemas/loginSchema";
+import {
+  loginSchema,
+  type LoginSchema,
+} from "@/schemas/loginSchema";
 
 import { useLogin } from "@/hooks/useLogin";
 
@@ -23,20 +29,30 @@ import Divider from "./Divider";
 import SocialLogin from "./SocialLogin";
 import AuthHeader from "./AuthHeader";
 import AuthFooter from "./AuthFooter";
+import DevPreviewPanel from "./DevPreviewPanel";
 
 export default function LoginForm() {
-  const { login, isSubmitting } = useLogin();
+  const {
+    login,
+    isSubmitting,
+  } = useLogin();
 
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [
+    submitError,
+    setSubmitError,
+  ] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    formState: {
+      errors,
+    },
   } = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
+    resolver:
+      zodResolver(loginSchema),
 
     defaultValues: {
       email: "",
@@ -45,13 +61,17 @@ export default function LoginForm() {
     },
   });
 
-  const rememberMe = watch("rememberMe");
+  const rememberMe =
+    watch("rememberMe");
 
-  async function onSubmit(values: LoginSchema) {
+  async function onSubmit(
+    values: LoginSchema
+  ) {
     setSubmitError(null);
 
     try {
       await login(values);
+
     } catch (error) {
       const message =
         error instanceof Error
@@ -75,7 +95,9 @@ export default function LoginForm() {
         className="mt-8 space-y-5"
       >
         <div>
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email">
+            Email Address
+          </Label>
 
           <div className="relative">
             <Mail
@@ -102,7 +124,11 @@ export default function LoginForm() {
             />
           </div>
 
-          <ErrorMessage message={errors.email?.message} />
+          <ErrorMessage
+            message={
+              errors.email?.message
+            }
+          />
         </div>
 
         <div>
@@ -114,7 +140,10 @@ export default function LoginForm() {
               justify-between
             "
           >
-            <Label htmlFor="password" className="mb-0">
+            <Label
+              htmlFor="password"
+              className="mb-0"
+            >
               Password
             </Label>
 
@@ -135,22 +164,39 @@ export default function LoginForm() {
             id="password"
             placeholder="Enter your password"
             autoComplete="current-password"
-            error={errors.password?.message}
+            error={
+              errors.password?.message
+            }
             {...register("password")}
           />
         </div>
 
         <RememberMe
           checked={!!rememberMe}
-          onCheckedChange={(value) => setValue("rememberMe", value)}
+          onCheckedChange={(value) =>
+            setValue(
+              "rememberMe",
+              value
+            )
+          }
         />
 
-        <ErrorMessage message={submitError ?? undefined} />
+        <ErrorMessage
+          message={
+            submitError ?? undefined
+          }
+        />
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full"
+        >
           <LogIn className="h-4 w-4" />
 
-          {isSubmitting ? "Logging in..." : "Login"}
+          {isSubmitting
+            ? "Logging in..."
+            : "Login"}
         </Button>
 
         <Divider />
@@ -158,7 +204,7 @@ export default function LoginForm() {
         <SocialLogin
           onGoogleClick={() =>
             toast.info(
-              "Google sign-in will be available once OAuth is configured on the backend.",
+              "Google sign-in will be available once OAuth is configured on the backend."
             )
           }
         />
@@ -177,6 +223,8 @@ export default function LoginForm() {
           </Link>
         </AuthFooter>
       </form>
+
+      <DevPreviewPanel />
     </>
   );
 }

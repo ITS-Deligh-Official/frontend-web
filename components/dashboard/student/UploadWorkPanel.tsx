@@ -7,11 +7,7 @@ import { Button } from "@/components/ui/button";
 import { UploadCloud } from "lucide-react";
 import { studentAssessmentService } from "@/services/student/assessment.service";
 
-export default function UploadWorkPanel({
-  assessmentId,
-}: {
-  assessmentId: string;
-}) {
+export default function UploadWorkPanel({ assessmentId }: { assessmentId: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [comments, setComments] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -39,9 +35,7 @@ export default function UploadWorkPanel({
     <div className="space-y-4">
       <Card className="p-5">
         <p className="mb-1 font-semibold text-primary">Upload Your Work</p>
-        <p className="mb-3 text-xs text-grey-50">
-          Drag and drop your file or click to browse
-        </p>
+        <p className="mb-3 text-xs text-grey-50">Drag and drop your file or click to browse</p>
         <div
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
@@ -61,9 +55,7 @@ export default function UploadWorkPanel({
               Browse Files
             </Button>
           )}
-          <p className="mt-2 text-[11px] text-grey-50">
-            Supported formats: PDF, DOCX, ZIP (MAX 50MB)
-          </p>
+          <p className="mt-2 text-[11px] text-grey-50">Supported formats: PDF, DOCX, ZIP (MAX 50MB)</p>
           <input
             ref={inputRef}
             type="file"
@@ -75,12 +67,8 @@ export default function UploadWorkPanel({
       </Card>
 
       <Card className="p-5">
-        <p className="mb-1 font-semibold text-primary">
-          Additional Comments (Optional)
-        </p>
-        <p className="mb-2 text-xs text-grey-50">
-          Add any notes for your instructor
-        </p>
+        <p className="mb-1 font-semibold text-primary">Additional Comments (Optional)</p>
+        <p className="mb-2 text-xs text-grey-50">Add any notes for your instructor</p>
         <textarea
           value={comments}
           onChange={(e) => setComments(e.target.value)}
@@ -88,11 +76,7 @@ export default function UploadWorkPanel({
           placeholder="Enter any additional information or note about your submission…"
           className="w-full rounded-lg border border-grey-20 px-3 py-2 text-sm text-primary placeholder:text-grey-50 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary-10"
         />
-        <Button
-          className="mt-3 w-full"
-          onClick={handleSubmit}
-          disabled={submitting}
-        >
+        <Button className="mt-3 w-full" onClick={handleSubmit} disabled={submitting}>
           {submitting ? "Submitting…" : "Submit"}
         </Button>
       </Card>

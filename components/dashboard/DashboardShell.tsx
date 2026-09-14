@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardTopbar from "./DashboardTopbar";
@@ -6,31 +7,23 @@ import type { NavItem } from "@/data/dashboardNav";
 
 export default function DashboardShell({
   navItems,
-  workspaceLabel,
-  workspaceEyebrow,
   profileHref,
   notificationsHref,
   unreadCount,
   children,
 }: {
-  navItems: readonly NavItem[];
-  workspaceLabel?: string;
-  workspaceEyebrow?: string;
+  navItems: NavItem[];
   profileHref: string;
   notificationsHref: string;
   unreadCount?: number;
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="flex min-h-screen bg-grey-5">
-      <DashboardSidebar
-        items={navItems}
-        label={workspaceLabel}
-        eyebrow={workspaceEyebrow}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+    <div className="flex min-h-screen bg-grey-10/40">
+      <DashboardSidebar items={navItems} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
       <div className="flex min-w-0 flex-1 flex-col">
         <DashboardTopbar
           onMenuClick={() => setSidebarOpen(true)}
