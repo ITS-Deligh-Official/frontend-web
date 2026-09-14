@@ -16,12 +16,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           invalid
             ? "border-red-400 focus:ring-red-100"
             : "border-grey-20 focus:border-secondary focus:ring-secondary-10",
-          className,
+          className
         )}
         {...props}
       />
     );
-  },
+  }
 );
 Input.displayName = "Input";
 

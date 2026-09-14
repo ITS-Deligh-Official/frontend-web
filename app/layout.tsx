@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -9,28 +10,19 @@ import "./globals.css";
 const displayFont = localFont({
   variable: "--font-display",
   src: [
-    {
-      path: "../public/fonts/bdo-grotesk/BDOGrotesk-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/bdo-grotesk/BDOGrotesk-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/bdo-grotesk/BDOGrotesk-DemiBold.woff2",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/bdo-grotesk/BDOGrotesk-Bold.woff2",
-      weight: "700",
-      style: "normal",
-    },
+    { path: "../public/fonts/bdo-grotesk/BDOGrotesk-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/bdo-grotesk/BDOGrotesk-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/bdo-grotesk/BDOGrotesk-DemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/bdo-grotesk/BDOGrotesk-Bold.woff2", weight: "700", style: "normal" },
   ],
   display: "swap",
+});
+
+// Secondary typeface per the brand guide — Inter, for information-dense UI.
+const bodyFont = Inter({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -42,14 +34,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={displayFont.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased" suppressHydrationWarning>
+    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
+      <body className="font-sans antialiased">
         {children}
         <Toaster richColors position="top-center" />
       </body>

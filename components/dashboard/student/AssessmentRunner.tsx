@@ -31,11 +31,7 @@ function buildQuestions(assessment: AssessmentDetail) {
   }));
 }
 
-export default function AssessmentRunner({
-  assessment,
-}: {
-  assessment: AssessmentDetail;
-}) {
+export default function AssessmentRunner({ assessment }: { assessment: AssessmentDetail }) {
   const [open, setOpen] = useState(false);
   const [starting, setStarting] = useState(false);
   const [step, setStep] = useState(0);
@@ -65,23 +61,14 @@ export default function AssessmentRunner({
   function handleFinish() {
     setOpen(false);
     toast.success(
-      `Nice work! You answered ${Object.keys(answers).length} of ${questions.length} questions — scoring will sync once the results endpoint is live.`,
+      `Nice work! You answered ${Object.keys(answers).length} of ${questions.length} questions — scoring will sync once the results endpoint is live.`
     );
   }
 
   return (
     <>
-      <Button
-        size="lg"
-        className="w-full"
-        onClick={handleStart}
-        disabled={starting}
-      >
-        {starting
-          ? "Starting…"
-          : assessment.status === "in_progress"
-            ? "Resume Assessment"
-            : "Start Assessment"}
+      <Button size="lg" className="w-full" onClick={handleStart} disabled={starting}>
+        {starting ? "Starting…" : assessment.status === "in_progress" ? "Resume Assessment" : "Start Assessment"}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -100,9 +87,7 @@ export default function AssessmentRunner({
                   <button
                     key={option}
                     type="button"
-                    onClick={() =>
-                      setAnswers((prev) => ({ ...prev, [step]: option }))
-                    }
+                    onClick={() => setAnswers((prev) => ({ ...prev, [step]: option }))}
                     className={`flex w-full items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm transition-colors ${
                       selected
                         ? "border-secondary bg-secondary-10 text-secondary-100"
@@ -110,9 +95,7 @@ export default function AssessmentRunner({
                     }`}
                   >
                     {option}
-                    {selected && (
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-secondary" />
-                    )}
+                    {selected && <CheckCircle2 className="h-4 w-4 shrink-0 text-secondary" />}
                   </button>
                 );
               })}
@@ -120,11 +103,7 @@ export default function AssessmentRunner({
           </div>
 
           <div className="mt-6 flex justify-between gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setStep((s) => Math.max(0, s - 1))}
-              disabled={step === 0}
-            >
+            <Button variant="outline" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>
               Previous
             </Button>
             {isLast ? (

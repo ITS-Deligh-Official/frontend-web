@@ -14,8 +14,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: "Final-year learner",
   },
   {
-    quote:
-      "We cut first-round interviews significantly using verified talent profiles.",
+    quote: "We cut first-round interviews significantly using verified talent profiles.",
     name: "A. Recruiter",
     role: "Talent Acquisition",
   },

@@ -5,11 +5,7 @@ import DashboardShell from "@/components/dashboard/DashboardShell";
 import { DASHBOARD_NAV } from "@/data/dashboardNav";
 import { studentNotificationService } from "@/services/student/notification.service";
 
-export default function StudentLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {

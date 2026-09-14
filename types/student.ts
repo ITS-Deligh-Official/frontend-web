@@ -20,21 +20,7 @@ export interface DashboardSummaryCard {
   title: string;
   description: string;
   href: string;
-  icon:
-    | "learning"
-    | "classes"
-    | "assessment"
-    | "activity"
-    | "achievements"
-    | "recommended";
-}
-
-export interface StudentScheduleItem {
-  id: string;
-  title: string;
-  trainerName: string;
-  startsAt: string;
-  durationMinutes: number;
+  icon: "learning" | "classes" | "assessment" | "activity" | "achievements" | "recommended";
 }
 
 export interface StudentDashboardData {
@@ -48,7 +34,6 @@ export interface StudentDashboardData {
 export interface Course {
   id: string;
   title: string;
-  category?: string;
   level: string; // "Beginner to Advanced"
   rating: number;
   reviewCount: number;
