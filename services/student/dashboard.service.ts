@@ -1,8 +1,9 @@
 import { get } from "../api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import { USE_MOCK } from "@/lib/mock";
-import { MOCK_DASHBOARD } from "@/data/mock/student.mock";
-import type { StudentDashboardData } from "@/types/student";
+import type {
+  StudentDashboardData,
+  StudentScheduleItem,
+} from "@/types/student";
 
 export const studentDashboardService = {
   /**
@@ -11,8 +12,9 @@ export const studentDashboardService = {
    * Auth: requires a valid student JWT (read the student id off the token,
    * don't trust an id from the client).
    */
-  getDashboard: async (): Promise<StudentDashboardData> => {
-    if (USE_MOCK) return MOCK_DASHBOARD;
-    return get<StudentDashboardData>(API_ENDPOINTS.studentDashboard);
-  },
+  getDashboard: (): Promise<StudentDashboardData> =>
+    get<StudentDashboardData>(API_ENDPOINTS.studentDashboard),
+  /** Spring Boot: GET /student/schedule; student identity comes from the JWT. */
+  getSchedule: (): Promise<StudentScheduleItem[]> =>
+    get<StudentScheduleItem[]>(API_ENDPOINTS.studentSchedule),
 };

@@ -1,7 +1,5 @@
-export default function TrainerDashboardPage() {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center text-center text-sm text-grey-50">
-      Trainer dashboard — coming next.
-    </div>
-  );
+import { trainerService } from "@/services/trainer/trainer.service";
+import { TrainerDashboardView } from "@/components/dashboard/trainer/TrainerViews";
+export default async function Page() {
+  return <TrainerDashboardView data={await trainerService.getDashboard()} />;
 }

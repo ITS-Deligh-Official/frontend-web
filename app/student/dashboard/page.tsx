@@ -33,7 +33,10 @@ const ICON_BG = {
 } as const;
 
 export default async function StudentDashboardPage() {
-  const data = await studentDashboardService.getDashboard();
+  const [data, sessions] = await Promise.all([
+    studentDashboardService.getDashboard(),
+    studentDashboardService.getSchedule(),
+  ]);
 
   const medalColors = ["#F59E0B", "#9E9E9E", "#B07004"]; // gold, silver, bronze-ish per brand warning scale
 
@@ -46,16 +49,20 @@ export default async function StudentDashboardPage() {
             <h1 className="font-display text-2xl font-bold text-primary">
               Welcome back, {data.welcomeName}!
             </h1>
-            <p className="mt-1 text-sm text-grey-60">Keep learning, keep growing — you&apos;re doing great.</p>
+            <p className="mt-1 text-sm text-grey-60">
+              Keep learning, keep growing — you&apos;re doing great.
+            </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="/student/learning">
                 <Button>Continue Learning</Button>
               </Link>
-              <ScheduleDialog />
+              <ScheduleDialog sessions={sessions} />
             </div>
           </div>
           <div className="flex flex-col items-center gap-1 rounded-2xl bg-grey-10 p-4">
-            <p className="text-xs font-medium text-grey-60">This week&apos;s progress</p>
+            <p className="text-xs font-medium text-grey-60">
+              This week&apos;s progress
+            </p>
             <ProgressRing percent={data.weekProgressPercent} color="#22C55E" />
             <p className="text-xs font-medium text-success-80">Keep it up! ↗</p>
           </div>
@@ -68,12 +75,16 @@ export default async function StudentDashboardPage() {
             return (
               <Link key={card.id} href={card.href}>
                 <Card className="group flex h-full items-start gap-4 p-5 transition hover:-translate-y-0.5 hover:shadow-card-hover">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${ICON_BG[card.icon]}`}>
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${ICON_BG[card.icon]}`}
+                  >
                     <Icon className="h-5 w-5" />
                   </span>
                   <div>
                     <p className="font-semibold text-primary">{card.title}</p>
-                    <p className="mt-1 text-sm text-grey-60">{card.description}</p>
+                    <p className="mt-1 text-sm text-grey-60">
+                      {card.description}
+                    </p>
                   </div>
                 </Card>
               </Link>
@@ -85,17 +96,24 @@ export default async function StudentDashboardPage() {
       {/* Right rail: top performers + rank list */}
       <div className="space-y-6">
         <Card className="p-5">
-          <h2 className="font-display text-base font-bold text-primary">Top Performers</h2>
+          <h2 className="font-display text-base font-bold text-primary">
+            Top Performers
+          </h2>
           <div className="mt-4 grid grid-cols-3 gap-3">
             {data.topPerformers.map((p) => (
-              <div key={p.id} className="flex flex-col items-center text-center">
+              <div
+                key={p.id}
+                className="flex flex-col items-center text-center"
+              >
                 <div
                   className="flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-white"
                   style={{ backgroundColor: medalColors[p.rank - 1] }}
                 >
                   {p.name.slice(0, 1)}
                 </div>
-                <p className="mt-2 text-xs font-semibold text-primary">{p.name}</p>
+                <p className="mt-2 text-xs font-semibold text-primary">
+                  {p.name}
+                </p>
                 <p className="text-[10px] text-grey-50">{p.track}</p>
                 <span className="mt-1 text-[10px] font-semibold text-grey-60">
                   {p.rank === 1 ? "First" : p.rank === 2 ? "Second" : "Third"}
@@ -107,8 +125,13 @@ export default async function StudentDashboardPage() {
 
         <Card className="p-5">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-display text-base font-bold text-primary">Rank List</h2>
-            <Link href="/student/career" className="flex items-center gap-1 text-xs font-medium text-secondary hover:underline">
+            <h2 className="font-display text-base font-bold text-primary">
+              Rank List
+            </h2>
+            <Link
+              href="/student/career"
+              className="flex items-center gap-1 text-xs font-medium text-secondary hover:underline"
+            >
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -122,8 +145,13 @@ export default async function StudentDashboardPage() {
             </thead>
             <tbody>
               {data.rankList.map((row) => (
-                <tr key={row.rank} className="border-b border-grey-20/60 last:border-0">
-                  <td className="py-2 pr-2 font-semibold text-primary">{row.rank}</td>
+                <tr
+                  key={row.rank}
+                  className="border-b border-grey-20/60 last:border-0"
+                >
+                  <td className="py-2 pr-2 font-semibold text-primary">
+                    {row.rank}
+                  </td>
                   <td className="py-2 pr-2 text-grey-70">{row.name}</td>
                   <td className="py-2 text-grey-60">{row.course}</td>
                 </tr>

@@ -1,38 +1,75 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  PROTECTED_ROLE_PREFIXES,
+  ROUTES,
+  getRoleHome,
+} from "@/lib/config/shared";
+import type { SystemRole } from "@/types/auth";
 
-const AUTH_COOKIE = process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "its_deligh_token";
+const SESSION_COOKIE = process.env.SESSION_COOKIE_NAME ?? "deligh_session";
+const ROLE_COOKIE = process.env.ROLE_COOKIE_NAME ?? "deligh_role";
+const ROLE_SECRET = process.env.ROLE_COOKIE_SECRET ?? "";
+const AUTH_ROUTES = [
+  ROUTES.login,
+  ROUTES.signup,
+  ROUTES.forgotPassword,
+  ROUTES.resetPassword,
+];
 
-// Every role has its own top-level workspace.
-const PROTECTED_ROUTES = ["/student", "/trainer", "/institution", "/recruiter", "/complete-profile"];
-const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
-
-export function middleware(request: NextRequest) {
+const encode = (bytes: ArrayBuffer) =>
+  btoa(String.fromCharCode(...new Uint8Array(bytes)))
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replaceAll("=", "");
+async function verifiedRole(value?: string): Promise<SystemRole | null> {
+  if (!value || !ROLE_SECRET) return null;
+  const split = value.lastIndexOf(".");
+  if (split < 1) return null;
+  const role = value.slice(0, split) as SystemRole;
+  const signature = value.slice(split + 1);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(ROLE_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const expected = encode(
+    await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(role)),
+  );
+  return signature === expected ? role : null;
+}
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get(AUTH_COOKIE)?.value;
-
-  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
-  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
-
-  if (isProtected && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  const protectedEntry = Object.entries(PROTECTED_ROLE_PREFIXES).find(
+    ([prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+  if (protectedEntry) {
+    if (!token) {
+      const url = new URL(ROUTES.login, request.url);
+      url.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(url);
+    }
+    const role = await verifiedRole(request.cookies.get(ROLE_COOKIE)?.value);
+    if (!role || !protectedEntry[1].includes(role)) {
+      return NextResponse.redirect(
+        new URL(role ? getRoleHome(role) : ROUTES.login, request.url),
+      );
+    }
   }
-
-  // NOTE for backend integration: this middleware only checks *whether* a
-  // token exists, not the user's role — it can't know that from a cookie
-  // alone. If an already-logged-in user hits /login, we send them to "/"
-  // and let the client-side role check (useAuthStore) route them onward,
-  // rather than guessing their role here.
-  if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (AUTH_ROUTES.some((route) => pathname.startsWith(route)) && token) {
+    const role = await verifiedRole(request.cookies.get(ROLE_COOKIE)?.value);
+    return NextResponse.redirect(
+      new URL(getRoleHome(role ?? undefined), request.url),
+    );
   }
-
   return NextResponse.next();
 }
-
 export const config = {
   matcher: [
+    "/admin/:path*",
+    "/super-admin/:path*",
     "/student/:path*",
     "/trainer/:path*",
     "/institution/:path*",

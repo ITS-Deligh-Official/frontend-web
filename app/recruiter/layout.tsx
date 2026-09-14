@@ -3,7 +3,11 @@
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import { DASHBOARD_NAV } from "@/data/dashboardNav";
 
-export default function RecruiterLayout({ children }: { children: React.ReactNode }) {
+export default function RecruiterLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <DashboardShell
       navItems={DASHBOARD_NAV.recruiter}
