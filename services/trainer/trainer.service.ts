@@ -1,4 +1,4 @@
-import { download, get, patch, post, put } from "@/services/api";
+import { get, patch, post, put } from "@/services/api";
 import { API_ENDPOINTS } from "@/lib/constants";
 import type {
   ApiRecord,
@@ -52,7 +52,7 @@ export const trainerService = {
   getReports: (query?: PageRequest) =>
     get<TrainerReportsData>(API_ENDPOINTS.trainerReports, query),
   exportReport: (payload: ApiRecord) =>
-    download(API_ENDPOINTS.trainerReportExport, payload),
+    post<Blob>(API_ENDPOINTS.trainerReportExport, payload),
   createAnnouncement: (payload: ApiRecord) =>
     post<ApiRecord>(API_ENDPOINTS.trainerAnnouncements, payload),
   markAttendance: (payload: ApiRecord) =>
@@ -69,7 +69,6 @@ export const trainerService = {
     post<ApiRecord>(API_ENDPOINTS.trainerFeedback, payload),
   updateFeedback: (feedbackId: Identifier, payload: ApiRecord) =>
     patch<ApiRecord>(API_ENDPOINTS.trainerFeedbackItem(feedbackId), payload),
-  listNotifications: (query?: PageRequest) => get<PageResult<ApiRecord>>(API_ENDPOINTS.trainerNotifications, query),
   getProfile: () => get<ApiRecord>(API_ENDPOINTS.trainerProfile),
   updateProfile: (payload: ApiRecord) =>
     put<ApiRecord>(API_ENDPOINTS.trainerProfile, payload),

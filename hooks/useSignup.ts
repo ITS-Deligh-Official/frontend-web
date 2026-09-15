@@ -11,14 +11,11 @@ export function useSignup() {
   async function signup(payload: SignupPayload) {
     setIsSubmitting(true);
     try {
-      const result = await authService.signup(payload);
-      if (result.verificationRequired) {
-        toast.success("Account created. Please verify your email.");
-        router.push(`${ROUTES.verifyEmail}?email=${encodeURIComponent(result.email)}`);
-      } else {
-        toast.success("Account created. You can now sign in.");
-        router.push(ROUTES.login);
-      }
+      await authService.signup(payload);
+      toast.success("Account created! Please verify your email.");
+      router.push(
+        `${ROUTES.verifyEmail}?email=${encodeURIComponent(payload.email)}`,
+      );
     } catch (error) {
       toast.error(
         "We couldn't create your account. Please check your details and try again.",
