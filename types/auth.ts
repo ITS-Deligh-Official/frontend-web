@@ -48,5 +48,3 @@ export interface AuthUser {
 export interface AuthResponse {
   user: AuthUser;
 }
-
-export interface SignupResult { userId: string; email: string; verificationRequired: boolean; }

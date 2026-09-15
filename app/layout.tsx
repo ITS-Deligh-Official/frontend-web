@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { APP_CONFIG } from "@/lib/config/shared";
 
 // Primary typeface per the official Brand Guidelines v1.01 — BDO Grotesk
 // (open source, SIL OFL license, files bundled in public/fonts/bdo-grotesk).
@@ -35,8 +34,9 @@ const displayFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: `${APP_CONFIG.name} — ${APP_CONFIG.tagline}`,
-  description: APP_CONFIG.tagline,
+  title: "Deligh Campus — Built for Smarter Education",
+  description:
+    "Deligh Campus is ITS Deligh's soft-skills learning platform — courses, assessments, and career readiness in one place.",
   icons: {
     icon: "/logo/favicon.png",
   },
@@ -48,11 +48,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={displayFont.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased" suppressHydrationWarning>
-        {children}
-        <Toaster richColors position="top-center" />
-      </body>
-    </html>
-  );
+  <html
+    lang="en"
+    className={displayFont.variable}
+    suppressHydrationWarning
+  >
+    <body
+      className="font-sans antialiased"
+      suppressHydrationWarning
+    >
+      {children}
+      <Toaster richColors position="top-center" />
+    </body>
+  </html>
+);
 }

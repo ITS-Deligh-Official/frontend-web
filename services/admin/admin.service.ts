@@ -1,4 +1,4 @@
-import { del, download, get, patch, post, put } from "@/services/api";
+import { del, get, patch, post, put } from "@/services/api";
 import { API_ENDPOINTS } from "@/lib/constants";
 import type {
   ApiRecord,
@@ -58,7 +58,7 @@ export const adminService = {
   getReports: (query?: PageRequest) =>
     get<ApiRecord>(API_ENDPOINTS.adminReports, query),
   exportReport: (payload: ExportRequest) =>
-    download(API_ENDPOINTS.adminReportExport, payload),
+    post<Blob>(API_ENDPOINTS.adminReportExport, payload),
   getFinanceSummary: () => get<ApiRecord>(API_ENDPOINTS.adminFinance),
   listTransactions: (query?: PageRequest) =>
     get<PageResult<ApiRecord>>(API_ENDPOINTS.adminTransactions, query),

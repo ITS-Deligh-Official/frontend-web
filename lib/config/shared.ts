@@ -13,16 +13,11 @@ export const FRONTEND_API_ENDPOINTS = Object.freeze({
   logout: "/api/auth/logout",
 });
 
-const publicConfig = (name: string, value: string | undefined, developmentFallback: string) => {
-  const normalized = value?.trim();
-  if (normalized) return normalized;
-  if (process.env.NODE_ENV === "production") throw new Error(`Missing required environment variable: ${name}`);
-  return developmentFallback;
-};
 export const APP_CONFIG = Object.freeze({
-  name: publicConfig("NEXT_PUBLIC_APP_NAME", process.env.NEXT_PUBLIC_APP_NAME, "Deligh Campus"),
-  tagline: publicConfig("NEXT_PUBLIC_APP_TAGLINE", process.env.NEXT_PUBLIC_APP_TAGLINE, "Built for Smarter Education."),
-  supportEmail: publicConfig("NEXT_PUBLIC_SUPPORT_EMAIL", process.env.NEXT_PUBLIC_SUPPORT_EMAIL, "support@localhost"),
+  name: process.env.NEXT_PUBLIC_APP_NAME ?? "Deligh Campus",
+  tagline:
+    process.env.NEXT_PUBLIC_APP_TAGLINE ?? "Built for Smarter Education.",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "support@example.com",
 });
 
 export const ROUTES = Object.freeze({
@@ -174,6 +169,9 @@ export const API_ENDPOINTS = Object.freeze({
   trainerSessions: "/trainer/sessions",
   trainerSession: (sessionId: string) =>
     `/trainer/sessions/${encodeURIComponent(sessionId)}`,
+  trainerLearners: "/trainer/learners",
+  trainerLearner: (learnerId: string) =>
+    `/trainer/learners/${encodeURIComponent(learnerId)}`,
   trainerAssessments: "/trainer/assessments",
   trainerAssessment: (assessmentId: string) =>
     `/trainer/assessments/${encodeURIComponent(assessmentId)}`,

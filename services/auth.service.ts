@@ -8,7 +8,6 @@ import type {
   ForgotPasswordPayload,
   ResetPasswordPayload,
   AuthResponse,
-  SignupResult,
 } from "@/types/auth";
 import type { ApiResponse } from "@/types/api";
 
@@ -26,8 +25,8 @@ export const authService = {
       throw new Error(data.message ?? "Unable to log in.");
     return data.data;
   },
-  async signup(payload: SignupPayload): Promise<SignupResult> {
-    const { data } = await axios.post<ApiResponse<SignupResult>>(
+  async signup(payload: SignupPayload): Promise<{ message?: string }> {
+    const { data } = await axios.post<ApiResponse<{ message?: string }>>(
       FRONTEND_API_ENDPOINTS.register,
       payload,
       {
@@ -37,8 +36,7 @@ export const authService = {
     );
     if (!data.success)
       throw new Error(data.message ?? "Unable to create account.");
-    if (!data.data) throw new Error(data.message ?? "Registration response was incomplete.");
-    return data.data;
+    return data.data ?? { message: data.message };
   },
   forgotPassword: (payload: ForgotPasswordPayload) =>
     post<{ message: string }>(API_ENDPOINTS.forgotPassword, payload),
