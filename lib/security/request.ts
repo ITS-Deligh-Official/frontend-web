@@ -8,7 +8,9 @@ export function isTrustedMutationOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   if (origin) return origin === request.nextUrl.origin;
   const referer = request.headers.get("referer");
-  if (!referer) return true;
+  // Browsers send Origin for unsafe requests. Reject an absent origin/referrer
+  // instead of treating it as trusted: the BFF is cookie-authenticated.
+  if (!referer) return false;
   try {
     return new URL(referer).origin === request.nextUrl.origin;
   } catch {

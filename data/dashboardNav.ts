@@ -24,7 +24,6 @@ import {
   CalendarDays,
   UsersRound,
   ClipboardCheck,
-  MessageSquareText,
 } from "lucide-react";
 import type { SystemRole } from "@/types/auth";
 

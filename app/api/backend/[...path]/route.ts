@@ -6,6 +6,7 @@ import type { ApiResponse } from "@/types/api";
 
 export const runtime = "nodejs";
 const ALLOWED_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+const MAX_REQUEST_BODY_BYTES = 10 * 1024 * 1024;
 type RefreshData = { accessToken: string; refreshToken?: string };
 
 async function timedFetch(input: string | URL, init: RequestInit) {
@@ -39,6 +40,16 @@ async function proxy(
       { success: false, message: "Cross-site request rejected." },
       { status: 403 },
     );
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (
+    !Number.isFinite(contentLength) ||
+    contentLength < 0 ||
+    contentLength > MAX_REQUEST_BODY_BYTES
+  )
+    return NextResponse.json(
+      { success: false, message: "Request body is too large." },
+      { status: 413 },
+    );
 
   const { path } = await context.params;
   const accessToken = request.cookies.get(
@@ -53,9 +64,22 @@ async function proxy(
   request.nextUrl.searchParams.forEach((value, key) =>
     destination.searchParams.append(key, value),
   );
-  const requestBody = ["GET", "HEAD"].includes(request.method)
-    ? undefined
-    : await request.arrayBuffer();
+  let requestBody: ArrayBuffer | undefined;
+  try {
+    requestBody = ["GET", "HEAD"].includes(request.method)
+      ? undefined
+      : await request.arrayBuffer();
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "Unable to read request body." },
+      { status: 400 },
+    );
+  }
+  if (requestBody && requestBody.byteLength > MAX_REQUEST_BODY_BYTES)
+    return NextResponse.json(
+      { success: false, message: "Request body is too large." },
+      { status: 413 },
+    );
   const contentType = request.headers.get("content-type");
 
   const send = (token?: string) => {

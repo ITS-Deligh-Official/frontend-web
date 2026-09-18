@@ -14,9 +14,15 @@ export default function StudentLayout({
 
   useEffect(() => {
     let active = true;
-    studentNotificationService.getAll().then((list) => {
-      if (active) setUnreadCount(list.filter((n) => !n.read).length);
-    });
+    studentNotificationService
+      .getAll()
+      .then((list) => {
+        if (active) setUnreadCount(list.filter((n) => !n.read).length);
+      })
+      // Notification failure must not make the learning workspace unusable.
+      .catch(() => {
+        if (active) setUnreadCount(0);
+      });
     return () => {
       active = false;
     };
