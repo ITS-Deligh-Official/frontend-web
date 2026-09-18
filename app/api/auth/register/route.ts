@@ -14,6 +14,12 @@ export async function POST(request: NextRequest) {
       { status: 403 },
     );
   }
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (!Number.isFinite(contentLength) || contentLength > 16 * 1024)
+    return NextResponse.json(
+      { success: false, message: "Registration request is too large." },
+      { status: 413 },
+    );
   const payload = await request.json().catch(() => null);
   if (
     !payload ||
@@ -29,6 +35,18 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+  if (
+    payload.fullName.trim().length < 2 ||
+    payload.fullName.length > 120 ||
+    payload.email.trim().length > 254 ||
+    payload.mobile.trim().length > 32 ||
+    payload.password.length < 8 ||
+    payload.password.length > 1024
+  )
+    return NextResponse.json(
+      { success: false, message: "Invalid registration request." },
+      { status: 400 },
+    );
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(),

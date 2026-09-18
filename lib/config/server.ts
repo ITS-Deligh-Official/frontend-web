@@ -1,9 +1,24 @@
 import "server-only";
 
 const required = (name: string, value: string | undefined): string => {
-  if (!value && process.env.NODE_ENV === "production")
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+  if (!value && process.env.NODE_ENV === "production" && !isBuildPhase) {
     throw new Error(`Missing required environment variable: ${name}`);
+  }
   return value ?? "";
+};
+
+const requiredSecret = (name: string, value: string | undefined): string => {
+  const secret = required(name, value);
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+  if (
+    process.env.NODE_ENV === "production" &&
+    !isBuildPhase &&
+    secret.length < 32
+  ) {
+    throw new Error(`${name} must be at least 32 characters long`);
+  }
+  return secret;
 };
 
 export const SERVER_CONFIG = Object.freeze({
@@ -14,7 +29,7 @@ export const SERVER_CONFIG = Object.freeze({
   sessionCookieName: process.env.SESSION_COOKIE_NAME ?? "deligh_session",
   refreshCookieName: process.env.REFRESH_COOKIE_NAME ?? "deligh_refresh",
   roleCookieName: process.env.ROLE_COOKIE_NAME ?? "deligh_role",
-  roleCookieSecret: required(
+  roleCookieSecret: requiredSecret(
     "ROLE_COOKIE_SECRET",
     process.env.ROLE_COOKIE_SECRET,
   ),

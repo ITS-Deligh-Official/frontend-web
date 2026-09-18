@@ -31,6 +31,7 @@ export const ROUTES = Object.freeze({
   admin: "/admin",
   superAdmin: "/super-admin",
   student: "/student",
+  studentDashboard: "/student/dashboard",
   trainer: "/trainer",
   trainerDashboard: "/trainer/dashboard",
   institution: "/institution",

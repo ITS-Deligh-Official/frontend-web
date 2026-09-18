@@ -21,6 +21,13 @@ const encode = (bytes: ArrayBuffer) =>
     .replaceAll("+", "-")
     .replaceAll("/", "_")
     .replaceAll("=", "");
+const equalInConstantTime = (left: string, right: string) => {
+  if (left.length !== right.length) return false;
+  let difference = 0;
+  for (let index = 0; index < left.length; index += 1)
+    difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  return difference === 0;
+};
 async function verifiedRole(value?: string): Promise<SystemRole | null> {
   if (!value || !ROLE_SECRET) return null;
   const split = value.lastIndexOf(".");
@@ -37,7 +44,7 @@ async function verifiedRole(value?: string): Promise<SystemRole | null> {
   const expected = encode(
     await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(role)),
   );
-  return signature === expected ? role : null;
+  return equalInConstantTime(signature, expected) ? role : null;
 }
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

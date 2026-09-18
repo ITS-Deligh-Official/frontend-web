@@ -43,11 +43,39 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
-  const upstream = await backendFetch(API_ENDPOINTS.login, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ email: payload.email, password: payload.password }),
-  });
+  const email = payload.email.trim().toLowerCase();
+  if (
+    !email ||
+    email.length > 254 ||
+    payload.password.length < 8 ||
+    payload.password.length > 1024
+  )
+    return NextResponse.json(
+      { success: false, message: "Invalid login request." },
+      { status: 400 },
+    );
+  let upstream: Response;
+  try {
+    upstream = await backendFetch(API_ENDPOINTS.login, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ email, password: payload.password }),
+    });
+  } catch (error) {
+    const timedOut = error instanceof Error && error.name === "AbortError";
+    return NextResponse.json(
+      {
+        success: false,
+        message: timedOut
+          ? "Authentication service timed out."
+          : "Authentication service is unavailable.",
+      },
+      { status: timedOut ? 504 : 502 },
+    );
+  }
   const body = (await upstream
     .json()
     .catch(() => null)) as ApiResponse<BackendLoginData> | null;
@@ -103,9 +131,20 @@ export async function GET(request: NextRequest) {
       { success: false, message: "Unauthenticated." },
       { status: 401 },
     );
-  const upstream = await backendFetch(API_ENDPOINTS.currentUser, {
-    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-  });
-  const body = await upstream.json().catch(() => null);
-  return NextResponse.json(body, { status: upstream.status });
+  try {
+    const upstream = await backendFetch(API_ENDPOINTS.currentUser, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    });
+    const body = await upstream.json().catch(() => null);
+    return NextResponse.json(body, { status: upstream.status });
+  } catch (error) {
+    const timedOut = error instanceof Error && error.name === "AbortError";
+    return NextResponse.json(
+      {
+        success: false,
+        message: timedOut ? "Session check timed out." : "Session service unavailable.",
+      },
+      { status: timedOut ? 504 : 502 },
+    );
+  }
 }
