@@ -79,7 +79,7 @@ export const API_ENDPOINTS = Object.freeze({
   login: "/auth/login",
   refreshSession: "/auth/refresh",
   revokeSession: "/auth/logout",
-  signup: "/auth/signup",
+  signup: "/v1/auth/register",
   forgotPassword: "/auth/forgot-password",
   resetPassword: "/auth/reset-password",
   verifyEmail: "/auth/verify-email",
