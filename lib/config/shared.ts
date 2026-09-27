@@ -82,9 +82,9 @@ export const API_ENDPOINTS = Object.freeze({
   signup: "/v1/auth/register",
   forgotPassword: "/auth/forgot-password",
   resetPassword: "/auth/reset-password",
-  verifyEmail: "/auth/verify-email",
-  resendVerification: "/auth/resend-verification",
-  completeProfile: "/auth/complete-profile",
+  verifyEmail: "/v1/auth/verify-email",
+  resendVerification: "/v1/auth/resend-verification",
+  completeProfile: "/v1/auth/complete-profile",
   currentUser: "/users/me",
   /*
    * Admin APIs required by the approved product vision:
