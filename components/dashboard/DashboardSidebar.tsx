@@ -81,7 +81,7 @@ export default function DashboardSidebar({
                   "flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                   active
                     ? "bg-white text-primary shadow-sm"
-                    : "text-white/72 hover:bg-white/10 hover:text-white",
+                    : "text-white/70 hover:bg-white/10 hover:text-white",
                 )}
               >
                 <Icon className="h-[18px] w-[18px] shrink-0" />
