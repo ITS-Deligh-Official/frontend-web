@@ -76,7 +76,7 @@ export function getRoleHome(role?: string): string {
 }
 
 export const API_ENDPOINTS = Object.freeze({
-  login: "/auth/login",
+  login: "/v1/auth/login",
   refreshSession: "/auth/refresh",
   revokeSession: "/auth/logout",
   signup: "/v1/auth/register",
