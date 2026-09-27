@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, LogIn } from "lucide-react";
-import { toast } from "sonner";
 
 import { loginSchema, type LoginSchema } from "@/schemas/loginSchema";
 
@@ -156,11 +155,9 @@ export default function LoginForm() {
         <Divider />
 
         <SocialLogin
-          onGoogleClick={() =>
-            toast.info(
-              "Google sign-in will be available once OAuth is configured on the backend.",
-            )
-          }
+          onGoogleClick={() => {
+            window.location.assign("/api/auth/google");
+          }}
         />
 
         <AuthFooter>
