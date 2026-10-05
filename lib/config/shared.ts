@@ -70,12 +70,14 @@ export const PROTECTED_ROLE_PREFIXES: Readonly<
 
 export function getRoleHome(role?: string): string {
   const normalized = role?.trim().toLowerCase() as SystemRole | undefined;
+
   return normalized && normalized in ROLE_HOME
     ? ROLE_HOME[normalized]
     : ROUTES.home;
 }
 
 export const API_ENDPOINTS = Object.freeze({
+  // Authentication
   login: "/v1/auth/login",
   refreshSession: "/auth/refresh",
   revokeSession: "/auth/logout",
@@ -86,122 +88,117 @@ export const API_ENDPOINTS = Object.freeze({
   resendVerification: "/v1/auth/resend-verification",
   completeProfile: "/v1/auth/complete-profile",
   currentUser: "/users/me",
-  /*
-   * Admin APIs required by the approved product vision:
-   * centralized governance, learner operations, quality, analytics, finance,
-   * content, and settings. Spring Security must enforce every permission.
-   */
-  adminDashboard: "/admin/dashboard",
-  adminUsers: "/admin/users",
-  adminUser: (userId: string) => `/admin/users/${encodeURIComponent(userId)}`,
+
+  // Admin APIs
+  adminDashboard: "/v1/admin/dashboard",
+  adminUsers: "/v1/admin/users",
+  adminUser: (userId: string) =>
+    `/v1/admin/users/${encodeURIComponent(userId)}`,
   adminUserStatus: (userId: string) =>
-    `/admin/users/${encodeURIComponent(userId)}/status`,
+    `/v1/admin/users/${encodeURIComponent(userId)}/status`,
   adminUserRoles: (userId: string) =>
-    `/admin/users/${encodeURIComponent(userId)}/roles`,
-  adminCourses: "/admin/courses",
+    `/v1/admin/users/${encodeURIComponent(userId)}/roles`,
+  adminCourses: "/v1/admin/courses",
   adminCourse: (courseId: string) =>
-    `/admin/courses/${encodeURIComponent(courseId)}`,
-  adminBatches: "/admin/batches",
+    `/v1/admin/courses/${encodeURIComponent(courseId)}`,
+  adminBatches: "/v1/admin/batches",
   adminBatch: (batchId: string) =>
-    `/admin/batches/${encodeURIComponent(batchId)}`,
-  adminCourseApprovals: "/admin/course-approvals",
+    `/v1/admin/batches/${encodeURIComponent(batchId)}`,
+  adminCourseApprovals: "/v1/admin/course-approvals",
   adminCourseApprovalDecision: (courseId: string) =>
-    `/admin/course-approvals/${encodeURIComponent(courseId)}/decision`,
-  adminAssessments: "/admin/assessments",
+    `/v1/admin/course-approvals/${encodeURIComponent(courseId)}/decision`,
+  adminAssessments: "/v1/admin/assessments",
   adminAssessment: (assessmentId: string) =>
-    `/admin/assessments/${encodeURIComponent(assessmentId)}`,
-  adminAppeals: "/admin/appeals",
+    `/v1/admin/assessments/${encodeURIComponent(assessmentId)}`,
+  adminAppeals: "/v1/admin/appeals",
   adminAppealDecision: (appealId: string) =>
-    `/admin/appeals/${encodeURIComponent(appealId)}/decision`,
-  adminReports: "/admin/reports",
-  adminReportExport: "/admin/reports/export",
-  adminFinance: "/admin/finance",
-  adminTransactions: "/admin/finance/transactions",
-  adminContent: "/admin/content",
+    `/v1/admin/appeals/${encodeURIComponent(appealId)}/decision`,
+  adminReports: "/v1/admin/reports",
+  adminReportExport: "/v1/admin/reports/export",
+  adminFinance: "/v1/admin/finance",
+  adminTransactions: "/v1/admin/finance/transactions",
+  adminContent: "/v1/admin/content",
   adminContentItem: (contentId: string) =>
-    `/admin/content/${encodeURIComponent(contentId)}`,
-  adminSettings: "/admin/settings",
+    `/v1/admin/content/${encodeURIComponent(contentId)}`,
+  adminSettings: "/v1/admin/settings",
 
-  /*
-   * Super Admin APIs required for platform-wide governance:
-   * organizations, RBAC, administrator provisioning, subscriptions,
-   * analytics, auditability, and secure platform configuration.
-   */
-  superAdminDashboard: "/super-admin/dashboard",
-  organizations: "/super-admin/organizations",
+  // Super Admin APIs
+  superAdminDashboard: "/v1/super-admin/dashboard",
+  organizations: "/v1/super-admin/organizations",
   organization: (organizationId: string) =>
-    `/super-admin/organizations/${encodeURIComponent(organizationId)}`,
+    `/v1/super-admin/organizations/${encodeURIComponent(organizationId)}`,
   organizationStatus: (organizationId: string) =>
-    `/super-admin/organizations/${encodeURIComponent(organizationId)}/status`,
-  roles: "/super-admin/roles",
-  role: (roleId: string) => `/super-admin/roles/${encodeURIComponent(roleId)}`,
-  permissions: "/super-admin/permissions",
+    `/v1/super-admin/organizations/${encodeURIComponent(organizationId)}/status`,
+  roles: "/v1/super-admin/roles",
+  role: (roleId: string) =>
+    `/v1/super-admin/roles/${encodeURIComponent(roleId)}`,
+  permissions: "/v1/super-admin/permissions",
   rolePermissions: (roleId: string) =>
-    `/super-admin/roles/${encodeURIComponent(roleId)}/permissions`,
-  platformAdmins: "/super-admin/admins",
+    `/v1/super-admin/roles/${encodeURIComponent(roleId)}/permissions`,
+  platformAdmins: "/v1/super-admin/admins",
   platformAdmin: (adminId: string) =>
-    `/super-admin/admins/${encodeURIComponent(adminId)}`,
+    `/v1/super-admin/admins/${encodeURIComponent(adminId)}`,
   platformAdminStatus: (adminId: string) =>
-    `/super-admin/admins/${encodeURIComponent(adminId)}/status`,
-  subscriptions: "/super-admin/subscriptions",
+    `/v1/super-admin/admins/${encodeURIComponent(adminId)}/status`,
+  subscriptions: "/v1/super-admin/subscriptions",
   subscription: (subscriptionId: string) =>
-    `/super-admin/subscriptions/${encodeURIComponent(subscriptionId)}`,
-  platformAnalytics: "/super-admin/analytics",
-  systemConfiguration: "/super-admin/system-configuration",
-  auditLogs: "/super-admin/audit-logs",
-  platformConfiguration: "/super-admin/platform-configuration",
+    `/v1/super-admin/subscriptions/${encodeURIComponent(subscriptionId)}`,
+  platformAnalytics: "/v1/super-admin/analytics",
+  systemConfiguration: "/v1/super-admin/system-configuration",
+  auditLogs: "/v1/super-admin/audit-logs",
+  platformConfiguration: "/v1/super-admin/platform-configuration",
 
-  /* Trainer journey from the handbook: plan → teach → mentor → assess → feedback. */
-  trainerDashboard: "/trainer/dashboard",
-  trainerCourses: "/trainer/courses",
+  // Trainer APIs
+  trainerDashboard: "/v1/trainer/dashboard",
+  trainerCourses: "/v1/trainer/courses",
   trainerCourse: (courseId: string) =>
-    `/trainer/courses/${encodeURIComponent(courseId)}`,
-  trainerLiveClasses: "/trainer/live-classes",
-  trainerStudents: "/trainer/students",
+    `/v1/trainer/courses/${encodeURIComponent(courseId)}`,
+  trainerLiveClasses: "/v1/trainer/live-classes",
+  trainerStudents: "/v1/trainer/students",
   trainerStudent: (studentId: string) =>
-    `/trainer/students/${encodeURIComponent(studentId)}`,
-  trainerReports: "/trainer/reports",
-  trainerReportExport: "/trainer/reports/export",
-  trainerAnnouncements: "/trainer/announcements",
-  trainerAttendance: "/trainer/attendance",
-  trainerBatches: "/trainer/batches",
+    `/v1/trainer/students/${encodeURIComponent(studentId)}`,
+  trainerReports: "/v1/trainer/reports",
+  trainerReportExport: "/v1/trainer/reports/export",
+  trainerAnnouncements: "/v1/trainer/announcements",
+  trainerAttendance: "/v1/trainer/attendance",
+  trainerBatches: "/v1/trainer/batches",
   trainerBatch: (batchId: string) =>
-    `/trainer/batches/${encodeURIComponent(batchId)}`,
-  trainerSessions: "/trainer/sessions",
+    `/v1/trainer/batches/${encodeURIComponent(batchId)}`,
+  trainerSessions: "/v1/trainer/sessions",
   trainerSession: (sessionId: string) =>
-    `/trainer/sessions/${encodeURIComponent(sessionId)}`,
-  trainerLearners: "/trainer/learners",
+    `/v1/trainer/sessions/${encodeURIComponent(sessionId)}`,
+  trainerLearners: "/v1/trainer/learners",
   trainerLearner: (learnerId: string) =>
-    `/trainer/learners/${encodeURIComponent(learnerId)}`,
-  trainerAssessments: "/trainer/assessments",
+    `/v1/trainer/learners/${encodeURIComponent(learnerId)}`,
+  trainerAssessments: "/v1/trainer/assessments",
   trainerAssessment: (assessmentId: string) =>
-    `/trainer/assessments/${encodeURIComponent(assessmentId)}`,
-  trainerFeedback: "/trainer/feedback",
+    `/v1/trainer/assessments/${encodeURIComponent(assessmentId)}`,
+  trainerFeedback: "/v1/trainer/feedback",
   trainerFeedbackItem: (feedbackId: string) =>
-    `/trainer/feedback/${encodeURIComponent(feedbackId)}`,
-  trainerProfile: "/trainer/profile",
-  trainerNotifications: "/trainer/notifications",
+    `/v1/trainer/feedback/${encodeURIComponent(feedbackId)}`,
+  trainerProfile: "/v1/trainer/profile",
+  trainerNotifications: "/v1/trainer/notifications",
 
-  /* Student journey: learning → practice → assessment → verification → career. */
-  studentDashboard: "/student/dashboard",
-  studentSchedule: "/student/schedule",
-  studentCourses: "/student/courses",
+  // Student APIs
+  studentDashboard: "/v1/student/dashboard",
+  studentSchedule: "/v1/student/schedule",
+  studentCourses: "/v1/student/courses",
   studentCourseDetail: (courseId: string) =>
-    `/student/courses/${encodeURIComponent(courseId)}`,
+    `/v1/student/courses/${encodeURIComponent(courseId)}`,
   studentCourseEnroll: (courseId: string) =>
-    `/student/courses/${encodeURIComponent(courseId)}/enroll`,
-  studentAssessments: "/student/assessments",
+    `/v1/student/courses/${encodeURIComponent(courseId)}/enroll`,
+  studentAssessments: "/v1/student/assessments",
   studentAssessmentDetail: (assessmentId: string) =>
-    `/student/assessments/${encodeURIComponent(assessmentId)}`,
+    `/v1/student/assessments/${encodeURIComponent(assessmentId)}`,
   studentAssessmentStart: (assessmentId: string) =>
-    `/student/assessments/${encodeURIComponent(assessmentId)}/start`,
+    `/v1/student/assessments/${encodeURIComponent(assessmentId)}/start`,
   studentAssessmentSubmit: (assessmentId: string) =>
-    `/student/assessments/${encodeURIComponent(assessmentId)}/submit`,
-  studentCareer: "/student/career",
-  studentNotifications: "/student/notifications",
+    `/v1/student/assessments/${encodeURIComponent(assessmentId)}/submit`,
+  studentCareer: "/v1/student/career",
+  studentNotifications: "/v1/student/notifications",
   studentNotificationRead: (id: string) =>
-    `/student/notifications/${encodeURIComponent(id)}/read`,
+    `/v1/student/notifications/${encodeURIComponent(id)}/read`,
   studentNotificationDelete: (id: string) =>
-    `/student/notifications/${encodeURIComponent(id)}`,
-  studentProfile: "/student/profile",
+    `/v1/student/notifications/${encodeURIComponent(id)}`,
+  studentProfile: "/v1/student/profile",
 });
