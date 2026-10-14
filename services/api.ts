@@ -27,6 +27,14 @@ async function request<T>(
     );
   const protocol = incoming.get("x-forwarded-proto") ?? "http";
   const cookie = incoming.get("cookie") ?? "";
+  console.info("[SSR API diagnostic]", {
+    hostPresent: Boolean(host),
+    cookieHeaderPresent: Boolean(cookie),
+    sessionCookiePresent: cookie
+      .split(";")
+      .some((item) => item.trim().startsWith("deligh_session=")),
+    targetPath: `${API_BASE_URL}${url}`,
+  });
   const { data } = await axios.request<ApiResponse<T>>({
     method,
     url: `${protocol}://${host}${API_BASE_URL}${url}`,
