@@ -17,14 +17,22 @@ export default function CompleteProfilePage() {
   const [organization, setOrganization] = useState("");
   const [bio, setBio] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrorMessage("");
     setIsSubmitting(true);
     try {
       const user = await authService.completeProfile({ organization, bio });
       setProfile({ ...user, profileComplete: true, mobile: undefined });
       router.push(ROLE_HOME[user.role]);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to save your profile. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -59,6 +67,12 @@ export default function CompleteProfilePage() {
             className="w-full rounded-lg border border-grey-20 px-3 py-2.5 text-sm text-primary placeholder:text-grey-40 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary-10"
           />
         </div>
+
+        {errorMessage && (
+          <p role="alert" className="text-sm text-red-600">
+            {errorMessage}
+          </p>
+        )}
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
           <UserCog className="h-4 w-4" />

@@ -86,7 +86,7 @@ export const API_ENDPOINTS = Object.freeze({
   resetPassword: "/auth/reset-password",
   verifyEmail: "/v1/auth/verify-email",
   resendVerification: "/v1/auth/resend-verification",
-  completeProfile: "/v1/auth/complete-profile",
+  completeProfile: "/v1/users/me/complete-profile",
   currentUser: "/users/me",
 
   // Admin APIs
