@@ -1,7 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
+  const origin =
+    process.env.FRONTEND_ORIGIN || "https://delighcampus.itsdeligh.com";
+
   return NextResponse.redirect(
-    new URL("/api/oauth2/authorization/google", request.url),
+    new URL("/api/oauth2/authorization/google", origin),
   );
 }
